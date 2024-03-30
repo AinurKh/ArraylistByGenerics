@@ -87,7 +87,7 @@ public class MyArrayList <T> {
     }
 
 
-    public void trimTosize(){
+    private void trimTosize(){
         T[] copy = (T[]) new Object[mainArray.length-1];
 
         for (int i = 0; i <copy.length; i++) {
