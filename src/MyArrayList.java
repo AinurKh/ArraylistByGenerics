@@ -1,75 +1,100 @@
 import java.util.Arrays;
 
-public class MyArrayList {
-    private int num=0;
-    private int[] array;
-    private int capacity;
+public class MyArrayList <T> {
+    private int countEmployedIndex =0;// Cчитает фактически занятое количество слотов
+    private T[] mainArray;
+    private int capacity; // Ёмкость массива
 
     public MyArrayList(int capacity) {
         this.capacity = capacity;
-        this.array= new int[this.capacity];
+        this.mainArray = (T[]) new Object [this.capacity];
     }
 
     public MyArrayList() {
-        this.array=new int[10];
+        this.mainArray = (T[]) new Object[10];
     }
 
-    public int get(int a){
-        return this.array[a];
+    public T get(int a){
+        return this.mainArray[a];
     }
 
-    public void addAll(int[]array2){
-        int emptySlots=array.length-num; // Вычислим кол-во свободных слотов
+    public void addAll(MyArrayList<? extends T> addingArray){
+        int emptySlots= mainArray.length- countEmployedIndex; // Вычислим кол-во свободных слотов
 
-        if (emptySlots <= array2.length){
-            int[] copy= array;
-            int newCapacity= (array2.length-emptySlots)+array.length;
+        if (emptySlots <= addingArray.size()){
+            T[] copy= mainArray;
+            int newCapacity= mainArray.length+(addingArray.size()-emptySlots);
 
-            array=new int[newCapacity];
+            mainArray= (T[]) new Object[newCapacity];
 
-            System.arraycopy(copy,0,array,0,copy.length);
+
+            T[] copyOfAddingArray= (T[]) new Object[addingArray.size()];
+
+            for (int i = 0; i <addingArray.size(); i++) {
+                copyOfAddingArray[i]= addingArray.get(i);
+            }
+
+
+            System.arraycopy(copy,0,mainArray,0,copy.length);
+
+
+            System.arraycopy(copyOfAddingArray,0,mainArray,copy.length,copyOfAddingArray.length);
+
+            countEmployedIndex = mainArray.length;
+
         }
-        System.arraycopy(array2,0,array,num,array2.length);
     }
 
-    public void add(int number){
+    public void add(T number){
         check();
-        array[num]=number;
-        num++;
+        mainArray[countEmployedIndex]=number;
+        countEmployedIndex++;
     }
 
-    public void add(int index, int number){
+    public void add(int index, T number){
         check();
-        array[index]=number;
-        num++;
+        mainArray[index]=number;
+        countEmployedIndex++;
     }
     public void remove(int index){
-        array[index]=0;
-
-        for (int i = index; i < array.length-1; i++) {
-            int num = array[i+1];
-            array[i]=num;
-            array[i+1]=0;
+        mainArray[index]=null;
+        for (int i = index; i < mainArray.length-1; i++) {
+            T num = mainArray[i+1];
+            mainArray[i]= (T) num;
+            mainArray[i+1]= null;
         }
-
+        // Закоментируй этот метод чтобы увидеть сдвиг значений
+         trimTosize();
     }
 
-    public int length(){
-        return array.length;
+    public int size(){
+        return mainArray.length;
     }
 
 
     private int initSize(){ // Инициализация размера массива
-        return (int) (num*1.5);
+        return (int) (countEmployedIndex *1.5);
     }
 
     private boolean check(){ //Проверка длины массива.
-        if (num==array.length){
-            int[] copy= array;
-            array=new int[initSize()];
-            System.arraycopy(copy,0,array,0,copy.length);
+        if (countEmployedIndex == mainArray.length){
+            T[] copy= mainArray;
+            mainArray =(T[]) new Object[initSize()];
+            System.arraycopy(copy,0, mainArray,0,copy.length);
             return true;
         }
         return false;
+    }
+
+
+    public void trimTosize(){
+        T[] copy = (T[]) new Object[mainArray.length-1];
+
+        for (int i = 0; i <copy.length; i++) {
+            copy[i]=mainArray[i];
+        }
+        countEmployedIndex--;
+        mainArray=(T[]) new Object[copy.length];
+        System.arraycopy(copy,0,mainArray,0,copy.length);
     }
 }
