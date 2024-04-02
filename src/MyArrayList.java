@@ -1,6 +1,8 @@
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Iterator;
 
-public class MyArrayList <T> {
+public class MyArrayList <T>{
     private int countEmployedIndex =0;// Cчитает фактически занятое количество слотов
     private T[] mainArray;
     private int capacity; // Ёмкость массива
@@ -9,6 +11,7 @@ public class MyArrayList <T> {
         this.capacity = capacity;
         this.mainArray = (T[]) new Object [this.capacity];
     }
+
 
     public MyArrayList() {
         this.mainArray = (T[]) new Object[10];
@@ -52,9 +55,12 @@ public class MyArrayList <T> {
     }
 
     public void add(int index, T number){
-        check();
+      check();
+        for (int i = countEmployedIndex; i >index; i--) {
+            mainArray[i]=mainArray[i-1];
+        }
         mainArray[index]=number;
-        countEmployedIndex++;
+
     }
     public void remove(int index){
         mainArray[index]=null;
@@ -97,4 +103,7 @@ public class MyArrayList <T> {
         mainArray=(T[]) new Object[copy.length];
         System.arraycopy(copy,0,mainArray,0,copy.length);
     }
+
+
+
 }
